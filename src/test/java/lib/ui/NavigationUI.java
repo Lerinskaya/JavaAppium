@@ -2,6 +2,7 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import lib.Platform;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 abstract public class NavigationUI extends MainPageObject{
     protected static String
@@ -10,7 +11,7 @@ abstract public class NavigationUI extends MainPageObject{
             CANCEL_BUTTON,
             NAVIGATE_BUTTON_XPATH;
 
-    public NavigationUI(AppiumDriver driver) {
+    public NavigationUI(RemoteWebDriver driver) {
         super(driver);
     }
 

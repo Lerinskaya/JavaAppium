@@ -14,6 +14,10 @@ public class ChangeAppConditionTests extends CoreTestCase {
 
     @Test
     public void testChangeScreenOrientation() {
+        if(Platform.getInstance().isWEB()) {
+            return;
+        }
+
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
 
         SearchPageObject.initSearchInput();
@@ -23,7 +27,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
 
         String title_before_rotation = ArticlePageObject.getArticleDescription();
-//        this.rotateScreenLandscape();
+        this.rotateScreenLandscape();
         String title_after_rotation = ArticlePageObject.getArticleDescription();
 
         assertEquals(
@@ -32,7 +36,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
                 title_after_rotation
         );
 
-//        this.rotateScreenPortrait();
+        this.rotateScreenPortrait();
         String title_after_second_rotation = ArticlePageObject.getArticleDescription();
 
         assertEquals(
@@ -44,6 +48,9 @@ public class ChangeAppConditionTests extends CoreTestCase {
 
     @Test
     public void testSearchAfterBackground() throws InterruptedException {
+        if(Platform.getInstance().isWEB()) {
+            return;
+        }
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
 

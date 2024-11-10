@@ -1,6 +1,7 @@
 package tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.ui.ArticlePageObject;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.ArticlePageObjectFactory;
@@ -22,11 +23,19 @@ public class ArticleTests extends CoreTestCase {
         ArticlePageObject.waitForArticleDescription();
         String article_description = ArticlePageObject.getArticleDescription();
 
-        assertEquals(
-                "Unexpected article description",
-                "Object-oriented programming language",
-                article_description
-        );
+        if(Platform.getInstance().isWEB()){
+            assertEquals(
+                    "Unexpected article description",
+                    "Java (programming language)",
+                    article_description
+            );
+        } else {
+            assertEquals(
+                    "Unexpected article description",
+                    "Object-oriented programming language",
+                    article_description
+            );
+        }
     }
 
     @Test

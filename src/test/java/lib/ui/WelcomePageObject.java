@@ -1,6 +1,7 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public abstract class WelcomePageObject extends MainPageObject{
 
@@ -10,7 +11,7 @@ public abstract class WelcomePageObject extends MainPageObject{
             SKIP_BUTTON_XPATH,
     HELP_TEXT_ID;
 
-    public WelcomePageObject(AppiumDriver driver) {
+    public WelcomePageObject(RemoteWebDriver driver) {
         super(driver);
     }
 

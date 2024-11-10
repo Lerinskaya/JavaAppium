@@ -3,6 +3,7 @@ package lib.ui;
 import io.appium.java_client.AppiumDriver;
 import lib.Platform;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public abstract class ArticlePageObject extends MainPageObject{
 
@@ -21,7 +22,7 @@ public abstract class ArticlePageObject extends MainPageObject{
         CREATE_BUTTON,
         CANCEL_BUTTON;
 
-    public ArticlePageObject(AppiumDriver driver) {
+    public ArticlePageObject(RemoteWebDriver driver) {
         super(driver);
     }
 
@@ -37,23 +38,31 @@ public abstract class ArticlePageObject extends MainPageObject{
         WebElement title_description = waitForArticleDescription();
         if (Platform.getInstance().isAndroid()) {
             return title_description.getAttribute("text");
+        } else if(Platform.getInstance().isIOS()) {
+            return title_description.getAttribute("name");
+        } else {
+            return title_description.getText();
         }
-        return title_description.getAttribute("name");
     }
 
     public String getArticleTitle() {
         WebElement title_description = waitForArticleTitle();
         if (Platform.getInstance().isAndroid()) {
             return title_description.getAttribute("text");
+        }  else if(Platform.getInstance().isIOS()) {
+            return title_description.getAttribute("name");
+        } else {
+            return title_description.getText();
         }
-        return title_description.getAttribute("name");
     }
 
     public void swipeToFooter() {
         if (Platform.getInstance().isAndroid()) {
             this.swipeUpToFindElement(FOOTER_ELEMENT, "Cannot find the end of article", 20);
-        } else {
+        } else if(Platform.getInstance().isIOS()){
             this.swipeUpTillElementAppear(FOOTER_ELEMENT, "Cannot find the end of article", 20);
+        } else {
+            this.scrollWebPageTillElementNotVisible(FOOTER_ELEMENT, "Cannot find the end of article", 20);
         }
     }
 

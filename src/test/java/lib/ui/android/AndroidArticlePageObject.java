@@ -2,6 +2,7 @@ package lib.ui.android;
 
 import io.appium.java_client.AppiumDriver;
 import lib.ui.ArticlePageObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class AndroidArticlePageObject extends ArticlePageObject {
     static {
@@ -15,7 +16,7 @@ public class AndroidArticlePageObject extends ArticlePageObject {
                 ARTICLE_DESCRIPTION_ID = "id:pcs-edit-section-title-description";
                 SAVE_TAB_ID = "id:org.wikipedia:id/nav_tab_reading_lists";
     }
-    public AndroidArticlePageObject(AppiumDriver driver) {
+    public AndroidArticlePageObject(RemoteWebDriver driver) {
         super(driver);
     }
 }

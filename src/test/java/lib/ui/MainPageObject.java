@@ -7,6 +7,7 @@ import io.appium.java_client.touch.offset.PointOption;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.*;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import lib.Platform;
@@ -17,9 +18,9 @@ import java.util.regex.Pattern;
 
 public class MainPageObject {
 
-    protected AppiumDriver driver;
+    protected RemoteWebDriver driver;
 
-    public MainPageObject(AppiumDriver driver) {
+    public MainPageObject(RemoteWebDriver driver) {
     this.driver = driver;
     }
 
@@ -69,37 +70,68 @@ public class MainPageObject {
     }
 
     public void swipeUp(int timeOfSwipe){
-        TouchAction action = new TouchAction(driver);
-        Dimension size = driver.manage().window().getSize();
-        int x = size.width/2;
-        int start_y = (int) (size.height*0.7);
-        int end_y = (int) (size.height*0.3);
-        action
-                .press(PointOption.point(x, start_y))
-                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(timeOfSwipe)))
-                .moveTo(PointOption.point(x, end_y))
-                .release()
-                .perform();
+        if(driver instanceof AppiumDriver) {
+            TouchAction action = new TouchAction((AppiumDriver)driver);
+            Dimension size = driver.manage().window().getSize();
+            int x = size.width/2;
+            int start_y = (int) (size.height*0.7);
+            int end_y = (int) (size.height*0.3);
+            action
+                    .press(PointOption.point(x, start_y))
+                    .waitAction(WaitOptions.waitOptions(Duration.ofMillis(timeOfSwipe)))
+                    .moveTo(PointOption.point(x, end_y))
+                    .release()
+                    .perform();
+        } else {
+            System.out.println("Method rotateScreenPortait() does nothing for platform" + Platform.getInstance().getPlatformVar());
+        }
     }
 
     public void swipeUpQuick(){
         swipeUp(200);
     }
 
-    public void clickElementToTheRightUpperCorner(String locator, String error_message) {
+    public void scrollWebPageUp() {
+        if (Platform.getInstance().isWEB()) {
+            JavascriptExecutor JSExecutor = (JavascriptExecutor) driver;
+            JSExecutor.executeScript("window.scrollBy(0, 250)");
+        } else {
+            System.out.println("Method scrollWebPageUp() does nothing for platform" + Platform.getInstance().getPlatformVar());
+        }
+    }
+
+    public void scrollWebPageTillElementNotVisible(String locator, String error_message, int max_swipes) {
+        int swipes = 0;
+
         WebElement element = this.waitForElement(locator, error_message);
-        int right_x = element.getLocation().getX();
-        int upper_y = element.getLocation().getY();
-        int lower_y = upper_y + element.getSize().getHeight();
-        int middle_y = (upper_y + lower_y)/2;
-        int width = element.getSize().getWidth();
 
-        int point_to_click_x = (right_x + width) - 3;
-        int point_to_click_y = middle_y;
+        while(!this.isElementLocatedOnTheScreen(locator)) {
+            scrollWebPageUp();
+            ++swipes;
+            if(swipes>max_swipes) {
+                Assert.assertTrue(error_message, element.isDisplayed());
+            }
+        }
+    }
 
-        new TouchAction(driver)
-                .tap(PointOption.point(point_to_click_x, point_to_click_y))
-                .perform();
+    public void clickElementToTheRightUpperCorner(String locator, String error_message) {
+
+        if(driver instanceof AppiumDriver) {
+            WebElement element = this.waitForElement(locator, error_message);
+            int right_x = element.getLocation().getX();
+            int upper_y = element.getLocation().getY();
+            int lower_y = upper_y + element.getSize().getHeight();
+            int middle_y = (upper_y + lower_y)/2;
+            int width = element.getSize().getWidth();
+
+            int point_to_click_x = (right_x + width) - 3;
+            int point_to_click_y = middle_y;
+            new TouchAction((AppiumDriver)driver)
+                    .tap(PointOption.point(point_to_click_x, point_to_click_y))
+                    .perform();
+        } else {
+            System.out.println("Method rotateScreenPortait() does nothing for platform" + Platform.getInstance().getPlatformVar());
+        }
     }
 
     public void swipeUpToFindElement(String locator, String errorMessage, int maxSwipes){
@@ -117,29 +149,33 @@ public class MainPageObject {
     }
 
     public void swipeElementToLeft(String locator, String errorMessage) {
-        WebElement element = waitForElement(locator, errorMessage);
-        int left_x = element.getLocation().getX();
-        int right_x = left_x + element.getSize().getWidth();
+        if(driver instanceof AppiumDriver) {
+            WebElement element = waitForElement(locator, errorMessage);
+            int left_x = element.getLocation().getX();
+            int right_x = left_x + element.getSize().getWidth();
 
-        int upper_y = element.getLocation().getY();
-        int lower_x = upper_y + element.getSize().getHeight();
-        int middle_y = (upper_y + lower_x)/2;
+            int upper_y = element.getLocation().getY();
+            int lower_x = upper_y + element.getSize().getHeight();
+            int middle_y = (upper_y + lower_x)/2;
 
-        if(Platform.getInstance().isAndroid()) {
-            TouchAction action = new TouchAction(driver);
+            if(Platform.getInstance().isAndroid()) {
+            TouchAction action = new TouchAction((AppiumDriver)driver);
             action.press(PointOption.point(right_x, middle_y));
             action.waitAction(WaitOptions.waitOptions(Duration.ofMillis(300)));
             action.moveTo(PointOption.point(right_x, middle_y));
             action.moveTo(PointOption.point(right_x, middle_y));
             action.release();
             action.perform();
-        } else {
-            new Actions(driver)
+            } else {
+                new Actions(driver)
                     .moveToElement(element, right_x, middle_y)
                     .clickAndHold()
                     .moveByOffset(-1 * element.getSize().getWidth(), 0)
                     .release()
                     .perform();
+                }
+            } else {
+            System.out.println("Method rotateScreenPortait() does nothing for platform" + Platform.getInstance().getPlatformVar());
         }
     }
 
@@ -177,6 +213,13 @@ public class MainPageObject {
 
     public boolean isElementLocatedOnTheScreen(String locator) {
         int element_location_y = this.waitForElement(locator, "Cannot find element by locator", 10).getLocation().getY();
+
+        if(Platform.getInstance().isWEB()){
+            JavascriptExecutor JSExecutor = (JavascriptExecutor) driver;
+            Object js_result = JSExecutor.executeScript("return window.pageYOffset");
+            element_location_y = Integer.parseInt(js_result.toString());
+        }
+
         int screen_size_y = driver.manage().window().getSize().getHeight();
         return element_location_y<screen_size_y;
     }
@@ -219,6 +262,8 @@ public class MainPageObject {
             return By.xpath(locator);
         } else if (by_type.equals("id")) {
             return By.id(locator);
+        } else if (by_type.equals("css")) {
+            return By.cssSelector(locator);
         } else {
             throw new IllegalArgumentException("Wrong locator type: " + locator_with_type);
         }
