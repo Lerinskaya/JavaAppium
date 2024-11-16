@@ -20,6 +20,10 @@ abstract public class MyListsPageObject extends MainPageObject{
         return ARTICLE_TITLE_TPL.replace("{TITLE}", article_title);
     }
 
+    private static String getRemoveButtonByTitle(String article_title){
+        return UNSAVE_BUTTON.replace("{TITLE}", article_title);
+    }
+
     public MyListsPageObject(RemoteWebDriver driver) {
         super(driver);
     }
@@ -46,10 +50,31 @@ abstract public class MyListsPageObject extends MainPageObject{
     public void swipeArticleToDelete(String article_title) {
         this.waitForArticleToAppear(article_title);
         String article_xpath = getArticleXpathByTitle(article_title);
-        this.swipeElementToLeft(
-                article_xpath,
-                "Article not found"
-        );
+
+        if(Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()){
+            this.swipeElementToLeft(
+                    article_xpath,
+                    "Article not found"
+            );
+        } else if(Platform.getInstance().isIOS()) {
+            this.clickElementToTheRightUpperCorner(article_xpath, "Cannot find saved article");
+
+            this.waitForElementAndClick(
+                    UNSAVE_BUTTON,
+                    "Cannot find unsave button",
+                    20
+            );
+        } else {
+//            String remove_locator = getRemoveButtonByTitle(article_title);
+//            this.waitForElementAndClick(remove_locator,
+//                    "Cannot click button to remove article from saved",
+//                    5);
+            this.waitForElementAndClick(
+                    UNSAVE_BUTTON,
+                    "Cannot find unsave button",
+                    20
+            );
+        }
 
         if(Platform.getInstance().isIOS()) {
             this.clickElementToTheRightUpperCorner(article_xpath, "Cannot find saved article");
@@ -59,6 +84,15 @@ abstract public class MyListsPageObject extends MainPageObject{
                     "Cannot find unsave button",
                     20
             );
+        }
+
+        if (Platform.getInstance().isWEB()) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            driver.navigate().refresh();
         }
 
         this.waitForElementAbsence(

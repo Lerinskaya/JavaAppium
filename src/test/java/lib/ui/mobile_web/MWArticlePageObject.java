@@ -11,6 +11,7 @@ public class MWArticlePageObject extends ArticlePageObject {
         LIST_BUTTON_ID ="id:Add “Java (programming language)” to a reading list?";
         SECOND_LIST_BUTTON_ID ="id:Add “JavaScript” to a reading list?";
         ARTICLE_TITLE = "css:#content h1";
+        OPTIONS_REMOVE_FROM_MY_LIST_BUTTON= "css:a[role='button'][title='Remove this page from your watchlist']";
         LIST_INPUT_ID = "xpath://XCUIElementTypeTextField[@value=\"reading list title\"]";
         OK_BUTTON_ID = "xpath://XCUIElementTypeStaticText[@name=\"Create reading list\"]";
         BACK_BUTTON = "xpath://XCUIElementTypeButton[@name=\"Back\"]";

@@ -15,6 +15,7 @@ public abstract class ArticlePageObject extends MainPageObject{
         LIST_BUTTON_ID,
             SECOND_LIST_BUTTON_ID,
         LIST_INPUT_ID,
+        OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
         OK_BUTTON_ID,
         BACK_BUTTON,
         ARTICLE_DESCRIPTION_ID,
@@ -99,39 +100,52 @@ public abstract class ArticlePageObject extends MainPageObject{
     }
 
     public void addArticlesToMySaved(String folder_name) {
-        this.waitForElementAndClick(
-                OPTION_BUTTON_ID,
-                "Save option not found",
-                5
-        );
+        if(Platform.getInstance().isWEB()){
+            this.removeArticleFromSavedIfItAdded();
+            this.waitForElementAndClick(
+                    OPTION_BUTTON_ID,
+                    "Save option not found",
+                    5
+            );
+        } else {
+            this.waitForElementAndClick(
+                    OPTION_BUTTON_ID,
+                    "Save option not found",
+                    5
+            );
 
-        this.waitForElementAndClick(
-                LIST_BUTTON_ID,
-                "List button not found",
-                5
-        );
+            this.waitForElementAndClick(
+                    LIST_BUTTON_ID,
+                    "List button not found",
+                    5
+            );
 
-        this.waitForElementAndClick(
-                CREATE_BUTTON,
-                "Create button not found",
-                5
-        );
+            this.waitForElementAndClick(
+                    CREATE_BUTTON,
+                    "Create button not found",
+                    5
+            );
 
-        this.waitForElementAndSendKeys(
-                LIST_INPUT_ID,
-                folder_name,
-                "Search input not found",
-                10);
+            this.waitForElementAndSendKeys(
+                    LIST_INPUT_ID,
+                    folder_name,
+                    "Search input not found",
+                    10);
 
-        this.waitForElementAndClick(
-                OK_BUTTON_ID,
-                "Ok button not found",
-                5
-        );
+            this.waitForElementAndClick(
+                    OK_BUTTON_ID,
+                    "Ok button not found",
+                    5
+            );
+        }
     }
 
     public void addArticleToExistingList(String folder_name) throws InterruptedException {
-        Thread.sleep(2000);
+//        Thread.sleep(2000);
+        if(Platform.getInstance().isWEB()){
+            this.removeArticleFromSavedIfItAdded();
+        }
+
         this.waitForElementAndClick(
                 OPTION_BUTTON_ID,
                 "Save option not found",
@@ -167,26 +181,43 @@ public abstract class ArticlePageObject extends MainPageObject{
         }
     }
 
+    public void removeArticleFromSavedIfItAdded() {
+        if(this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON)) {
+            this.waitForElementAndClick(
+                    OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
+                    "Cannot click button to remove an article from saved",
+                    5);
+        }
+       this.waitForElement(
+               OPTION_BUTTON_ID,
+               "Cannot find button to add an article to saved",
+               5);
+    }
+
 
     public void closeArticle() {
-        this.waitForElementAndClick(
-                BACK_BUTTON,
-                "No back button",
-                10
-        );
-
-        if(Platform.getInstance().isAndroid()){
+        if(Platform.getInstance().isWEB()) {
+            System.out.println("Method scrollWebPageUp() does nothing for platform" + Platform.getInstance().getPlatformVar());
+        } else {
             this.waitForElementAndClick(
                     BACK_BUTTON,
                     "No back button",
                     10
             );
-        } else {
-            this.waitForElementAndClick(
-                    CANCEL_BUTTON,
-                    "No cancel button",
-                    10
-            );
+
+            if(Platform.getInstance().isAndroid()){
+                this.waitForElementAndClick(
+                        BACK_BUTTON,
+                        "No back button",
+                        10
+                );
+            } else {
+                this.waitForElementAndClick(
+                        CANCEL_BUTTON,
+                        "No cancel button",
+                        10
+                );
+            }
         }
     }
 

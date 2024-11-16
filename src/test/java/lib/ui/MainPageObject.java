@@ -25,11 +25,15 @@ public class MainPageObject {
     }
 
     public WebElement waitForElement(String locator, String errorMessage, long timeout) {
+            By by = this.getLocatorByString(locator);
+            WebDriverWait wait = new WebDriverWait(driver, timeout);
+            wait.withMessage(errorMessage + "\n");
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
 
-        By by = this.getLocatorByString(locator);
-        WebDriverWait wait = new WebDriverWait(driver, timeout);
-        wait.withMessage(errorMessage + "\n");
-        return wait.until(ExpectedConditions.presenceOfElementLocated(by));
+//        By by = this.getLocatorByString(locator);
+//        WebDriverWait wait = new WebDriverWait(driver, timeout);
+//        wait.withMessage(errorMessage + "\n");
+//        return wait.until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
     public WebElement waitForElement(String locator, String errorMessage) {
@@ -179,27 +183,6 @@ public class MainPageObject {
         }
     }
 
-
-//    public void swipeElementToLeft(String locator, String errorMessage) {
-//        WebElement element = waitForElement(locator, errorMessage);
-//
-//        int leftX = element.getLocation().getX();
-//        int rightX = leftX + element.getSize().getWidth();
-//        int upperY = element.getLocation().getY();
-//        int middleY = upperY + (element.getSize().getHeight() / 2); // Центр по Y
-//
-//        PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
-//        Sequence swipe = new Sequence(finger, 1);
-//        swipe.addAction(finger.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.viewport(), rightX, middleY));
-//        swipe.addAction(finger.createPointerDown(0));
-//        swipe.addAction(new Pause(finger, Duration.ofMillis(300)));
-//        swipe.addAction(finger.createPointerMove(Duration.ofMillis(500), PointerInput.Origin.viewport(), leftX, middleY));
-//        swipe.addAction(finger.createPointerUp(0));
-
-//        driver.perform(Arrays.asList(swipe));
-//    }
-
-
     public void swipeUpTillElementAppear(String locator, String error_message, int max_swipes) {
         int swipes = 0;
         while(!this.isElementLocatedOnTheScreen(locator)) {
@@ -229,6 +212,27 @@ public class MainPageObject {
         By by = this.getLocatorByString(locator);
         List elements = driver.findElements(by);
         return elements.size();
+    }
+
+    public Boolean isElementPresent(String locator) {
+        return getAmountOfElements(locator) > 0;
+    }
+
+    public void tryClickElement(String locator, String error_message, int amount_of_attempts) {
+        int attempts = 0;
+        boolean need_more_attempts = true;
+
+        while (need_more_attempts) {
+            try{
+                this.waitForElementAndClick(locator, error_message, 5);
+                need_more_attempts = false;
+            } catch (Exception e) {
+                if (attempts>amount_of_attempts) {
+                    this.waitForElementAndClick(locator, error_message, 5);
+                }
+            }
+            ++attempts;
+        }
     }
 
     public void assertElementNotPresent(String locator, String errorMessage) {

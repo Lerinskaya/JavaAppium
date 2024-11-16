@@ -2,10 +2,7 @@ package tests;
 
 import lib.CoreTestCase;
 import lib.Platform;
-import lib.ui.ArticlePageObject;
-import lib.ui.MyListsPageObject;
-import lib.ui.NavigationUI;
-import lib.ui.SearchPageObject;
+import lib.ui.*;
 import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.MyListsPageObjectFactory;
 import lib.ui.factories.NavigationUIFactory;
@@ -14,7 +11,10 @@ import org.junit.Test;
 
 public class MyListsTest extends CoreTestCase {
 
-    private static final String folder_name = "Articles";
+    private static final String
+            folder_name = "Articles",
+            login = "Lerinskaya1",
+            password = "lolkek123";
 
     @Test
     public void testSaveArticle() {
@@ -37,9 +37,21 @@ public class MyListsTest extends CoreTestCase {
             ArticlePageObject.addArticlesToMySaved(folder_name);
         }
 
+        if(Platform.getInstance().isWEB()) {
+            AuthPageObject Auth= new AuthPageObject(driver);
+            Auth.clickAuthButton();
+            Auth.enterLoginData(login, password);
+            Auth.submitForm();
+
+            ArticlePageObject.waitForArticleDescription();
+
+            assertEquals("Not the same page", article_title,ArticlePageObject.getArticleDescription());
+        }
+
         ArticlePageObject.closeArticle();
 
         NavigationUI NavigationUI = NavigationUIFactory.get(driver);
+        NavigationUI.openNavigation();
         NavigationUI.clickMyLists();
 
         MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
