@@ -28,14 +28,8 @@ abstract public class NavigationUI extends MainPageObject{
     }
 
     public void clickMyLists() {
-        if(Platform.getInstance().isAndroid()){
+        if(Platform.getInstance().isAndroid() || Platform.getInstance().isWEB()){
             this.waitForElementAndClick(
-                    SAVE_OPTION_ID,
-                    "Save option not found",
-                    5
-            );
-        } else if(Platform.getInstance().isWEB()) {
-            this.tryClickElement(
                     SAVE_OPTION_ID,
                     "Save option not found",
                     5
@@ -55,10 +49,14 @@ abstract public class NavigationUI extends MainPageObject{
     }
 
     public void clickBackButton() {
-        this.waitForElementAndClick(
-                NAVIGATE_BUTTON_XPATH,
-                "Cannot find navigation back button",
-                10);
+        if(Platform.getInstance().isAndroid() || Platform.getInstance().isIOS()) {
+            this.waitForElementAndClick(
+                    NAVIGATE_BUTTON_XPATH,
+                    "Cannot find navigation back button",
+                    10);
+        } else {
+            System.out.println("Method scrollWebPageUp() does nothing for platform" + Platform.getInstance().getPlatformVar());
+        }
     }
 
     public void clickCancelButton() {

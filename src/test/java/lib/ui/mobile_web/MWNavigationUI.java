@@ -9,7 +9,6 @@ public class MWNavigationUI extends NavigationUI {
         BURGER_BUTTON = "css:#mw-mf-main-menu-button";
         CLOSE_BUTTON = "id:Close";
         NAVIGATE_BUTTON_XPATH = "id:Back";
-        CANCEL_BUTTON = "xpath://XCUIElementTypeStaticText[@name=\"Cancel\"]";
     }
 
     public MWNavigationUI(RemoteWebDriver driver) {

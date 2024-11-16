@@ -101,7 +101,6 @@ public abstract class ArticlePageObject extends MainPageObject{
 
     public void addArticlesToMySaved(String folder_name) {
         if(Platform.getInstance().isWEB()){
-            this.removeArticleFromSavedIfItAdded();
             this.waitForElementAndClick(
                     OPTION_BUTTON_ID,
                     "Save option not found",

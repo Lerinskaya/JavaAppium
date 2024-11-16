@@ -29,11 +29,6 @@ public class MainPageObject {
             WebDriverWait wait = new WebDriverWait(driver, timeout);
             wait.withMessage(errorMessage + "\n");
             return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
-
-//        By by = this.getLocatorByString(locator);
-//        WebDriverWait wait = new WebDriverWait(driver, timeout);
-//        wait.withMessage(errorMessage + "\n");
-//        return wait.until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
     public WebElement waitForElement(String locator, String errorMessage) {

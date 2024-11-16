@@ -1,6 +1,5 @@
 package lib.ui;
 
-import io.appium.java_client.AppiumDriver;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -63,7 +62,6 @@ public abstract class SearchPageObject extends MainPageObject{
     }
 
     public int getAmountOfArticles(String searchText) {
-//        String searchTextLocator = "//*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='"+ searchText +"']";
         String searchTextLocator = SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", searchText);
 
         this.waitForElement(

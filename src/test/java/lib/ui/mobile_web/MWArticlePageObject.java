@@ -12,13 +12,6 @@ public class MWArticlePageObject extends ArticlePageObject {
         SECOND_LIST_BUTTON_ID ="id:Add “JavaScript” to a reading list?";
         ARTICLE_TITLE = "css:#content h1";
         OPTIONS_REMOVE_FROM_MY_LIST_BUTTON= "css:a[role='button'][title='Remove this page from your watchlist']";
-        LIST_INPUT_ID = "xpath://XCUIElementTypeTextField[@value=\"reading list title\"]";
-        OK_BUTTON_ID = "xpath://XCUIElementTypeStaticText[@name=\"Create reading list\"]";
-        BACK_BUTTON = "xpath://XCUIElementTypeButton[@name=\"Back\"]";
-        ARTICLE_DESCRIPTION_ID = "css:#content h1";
-        CANCEL_BUTTON = "xpath://XCUIElementTypeStaticText[@name=\"Cancel\"]";
-        SAVE_TAB_ID = "id:tabbar-save";
-        CREATE_BUTTON = "xpath://XCUIElementTypeStaticText[@name=\"Create a new list\"]";
     }
     public MWArticlePageObject(RemoteWebDriver driver) {
         super(driver);

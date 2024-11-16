@@ -51,7 +51,7 @@ abstract public class MyListsPageObject extends MainPageObject{
         this.waitForArticleToAppear(article_title);
         String article_xpath = getArticleXpathByTitle(article_title);
 
-        if(Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()){
+        if(Platform.getInstance().isAndroid()){
             this.swipeElementToLeft(
                     article_xpath,
                     "Article not found"
@@ -65,15 +65,10 @@ abstract public class MyListsPageObject extends MainPageObject{
                     20
             );
         } else {
-//            String remove_locator = getRemoveButtonByTitle(article_title);
-//            this.waitForElementAndClick(remove_locator,
-//                    "Cannot click button to remove article from saved",
-//                    5);
-            this.waitForElementAndClick(
-                    UNSAVE_BUTTON,
-                    "Cannot find unsave button",
-                    20
-            );
+            String remove_locator = getRemoveButtonByTitle(article_title);
+            this.waitForElementAndClick(remove_locator,
+                    "Cannot click button to remove article from saved",
+                    5);
         }
 
         if(Platform.getInstance().isIOS()) {
@@ -120,7 +115,7 @@ abstract public class MyListsPageObject extends MainPageObject{
                     "xpath://*[@text='"+ article_title +"']",
                     "Title doesn't match"
             );
-        } else {
+        } else if(Platform.getInstance().isIOS()){
             this.assertElementPresent(
                     "xpath://*[@name='"+ article_title +"']",
                     "List is empty"
@@ -134,6 +129,22 @@ abstract public class MyListsPageObject extends MainPageObject{
 
             this.assertElementPresent(
                     "xpath://*[@name='"+ article_title +"']",
+                    "Title doesn't match"
+            );
+        } else {
+            this.assertElementPresent(
+                    "xpath://h3[text()='" + article_title + "']",
+                    "List is empty"
+            );
+
+            this.waitForElementAndClick(
+                    "xpath://h3[text()='" + article_title + "']",
+                    "The article not found",
+                    5
+            );
+
+            this.assertElementPresent(
+                    "xpath://h1[@id='firstHeading']//span[@class='mw-page-title-main' and text()='" + article_title + "']",
                     "Title doesn't match"
             );
         }

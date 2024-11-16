@@ -45,7 +45,7 @@ public class MyListsTest extends CoreTestCase {
 
             ArticlePageObject.waitForArticleDescription();
 
-            assertEquals("Not the same page", article_title,ArticlePageObject.getArticleDescription());
+            assertEquals("Not the same page", article_title, ArticlePageObject.getArticleDescription());
         }
 
         ArticlePageObject.closeArticle();
@@ -80,6 +80,20 @@ public class MyListsTest extends CoreTestCase {
             ArticlePageObject.addArticlesToMySaved(folder_name);
         }
 
+        if(Platform.getInstance().isWEB()) {
+            AuthPageObject Auth= new AuthPageObject(driver);
+            Auth.clickAuthButton();
+            Auth.enterLoginData(login, password);
+            Auth.submitForm();
+
+            ArticlePageObject.waitForArticleDescription();
+
+            assertEquals("Not the same page", first_article_title,ArticlePageObject.getArticleDescription());
+            SearchPageObject.initSearchInput();
+            SearchPageObject.typeSearchLine("Java");
+        }
+
+
         NavigationUI NavigationUI = NavigationUIFactory.get(driver);
         NavigationUI.clickBackButton();
 
@@ -87,22 +101,26 @@ public class MyListsTest extends CoreTestCase {
         ArticlePageObject.waitForArticleTitle();
         String second_article_title = ArticlePageObject.getArticleTitle();
 
-        ArticlePageObject.addArticleToExistingList(folder_name);
+        if(Platform.getInstance().isAndroid() || Platform.getInstance().isIOS()) {
+            ArticlePageObject.addArticleToExistingList(folder_name);
 
-        NavigationUI.clickBackButton();
-        if(Platform.getInstance().isAndroid()){
             NavigationUI.clickBackButton();
+            if(Platform.getInstance().isAndroid()){
+                NavigationUI.clickBackButton();
+            } else {
+                NavigationUI.clickCancelButton();
+            }
         } else {
-            NavigationUI.clickCancelButton();
+            ArticlePageObject.addArticlesToMySaved(folder_name);
         }
+            NavigationUI.openNavigation();
+            NavigationUI.clickMyLists();
 
-        NavigationUI.clickMyLists();
-
-        MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
-        if(Platform.getInstance().isAndroid()){
-            MyListsPageObject.openFolderByName(folder_name);
-        }
-        MyListsPageObject.swipeArticleToDelete(first_article_title);
-        MyListsPageObject.waitForArticlePresent(second_article_title);
+            MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
+            if(Platform.getInstance().isAndroid()){
+                MyListsPageObject.openFolderByName(folder_name);
+            }
+            MyListsPageObject.swipeArticleToDelete(first_article_title);
+            MyListsPageObject.waitForArticlePresent(second_article_title);
     }
 }
