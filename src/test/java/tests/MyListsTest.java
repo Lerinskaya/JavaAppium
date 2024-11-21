@@ -1,5 +1,7 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.Platform;
 import lib.ui.*;
@@ -7,8 +9,10 @@ import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.MyListsPageObjectFactory;
 import lib.ui.factories.NavigationUIFactory;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
+@Epic("Tests for lists")
 public class MyListsTest extends CoreTestCase {
 
     private static final String
@@ -17,6 +21,11 @@ public class MyListsTest extends CoreTestCase {
             password = "lolkek123";
 
     @Test
+    @Features(value={@Feature(value="Search"), @Feature(value = "Article List")})
+    @DisplayName("Save article to the list")
+    @Description("We open 'Java Object-oriented programming language' article and save it to the list")
+    @Step("Starting test testSaveArticle")
+    @Severity(value = SeverityLevel.CRITICAL)
     public void testSaveArticle() {
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
@@ -45,7 +54,7 @@ public class MyListsTest extends CoreTestCase {
 
             ArticlePageObject.waitForArticleDescription();
 
-            assertEquals("Not the same page", article_title, ArticlePageObject.getArticleDescription());
+            Assert.assertEquals("Not the same page", article_title, ArticlePageObject.getArticleDescription());
         }
 
         ArticlePageObject.closeArticle();
@@ -62,7 +71,12 @@ public class MyListsTest extends CoreTestCase {
     }
 
     @Test
-    public void testSaveArticles() throws InterruptedException {
+    @Features(value={@Feature(value="Search"), @Feature(value = "Article List")})
+    @DisplayName("Save 2 article to the list and delete first")
+    @Description("We open 2 articles, save them to the list, delete first article and compare title of a second article")
+    @Step("Starting test testSaveArticles")
+    @Severity(value = SeverityLevel.CRITICAL)
+    public void testSaveArticles() {
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         String folder_name = "Articles";
@@ -88,7 +102,7 @@ public class MyListsTest extends CoreTestCase {
 
             ArticlePageObject.waitForArticleDescription();
 
-            assertEquals("Not the same page", first_article_title,ArticlePageObject.getArticleDescription());
+            Assert.assertEquals("Not the same page", first_article_title,ArticlePageObject.getArticleDescription());
             SearchPageObject.initSearchInput();
             SearchPageObject.typeSearchLine("Java");
         }

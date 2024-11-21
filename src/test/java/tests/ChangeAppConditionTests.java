@@ -1,5 +1,7 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.Platform;
 import lib.ui.ArticlePageObject;
@@ -8,11 +10,18 @@ import lib.ui.SearchPageObject;
 import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.NavigationUIFactory;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
+@Epic("App conditions tests")
 public class ChangeAppConditionTests extends CoreTestCase {
 
     @Test
+    @Features(value={@Feature(value="App conditions")})
+    @DisplayName("Check screen orientation changes")
+    @Description("We open 'Java' article, rotate device and check article description")
+    @Step("Starting test testChangeScreenOrientation")
+    @Severity(value = SeverityLevel.CRITICAL)
     public void testChangeScreenOrientation() {
         if(Platform.getInstance().isWEB()) {
             return;
@@ -30,7 +39,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         this.rotateScreenLandscape();
         String title_after_rotation = ArticlePageObject.getArticleDescription();
 
-        assertEquals(
+        Assert.assertEquals(
                 "Title descriptions aren't equal after rotation",
                 title_before_rotation,
                 title_after_rotation
@@ -39,7 +48,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         this.rotateScreenPortrait();
         String title_after_second_rotation = ArticlePageObject.getArticleDescription();
 
-        assertEquals(
+        Assert.assertEquals(
                 "Title descriptions aren't equal after rotation",
                 title_before_rotation,
                 title_after_second_rotation
@@ -47,7 +56,12 @@ public class ChangeAppConditionTests extends CoreTestCase {
     }
 
     @Test
-    public void testSearchAfterBackground() throws InterruptedException {
+    @Features(value={@Feature(value="App conditions")})
+    @DisplayName("Check app background")
+    @Description("We open 'Java' article, background app, then open and check article description")
+    @Step("Starting test testSearchAfterBackground")
+    @Severity(value = SeverityLevel.CRITICAL)
+    public void testSearchAfterBackground() {
         if(Platform.getInstance().isWEB()) {
             return;
         }

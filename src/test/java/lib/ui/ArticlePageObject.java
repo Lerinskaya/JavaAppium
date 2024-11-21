@@ -37,6 +37,7 @@ public abstract class ArticlePageObject extends MainPageObject{
 
     public String getArticleDescription() {
         WebElement title_description = waitForArticleDescription();
+        screenshot(this.takeScreenshot("article_title"));
         if (Platform.getInstance().isAndroid()) {
             return title_description.getAttribute("text");
         } else if(Platform.getInstance().isIOS()) {
@@ -48,6 +49,7 @@ public abstract class ArticlePageObject extends MainPageObject{
 
     public String getArticleTitle() {
         WebElement title_description = waitForArticleTitle();
+        screenshot(this.takeScreenshot("article_title"));
         if (Platform.getInstance().isAndroid()) {
             return title_description.getAttribute("text");
         }  else if(Platform.getInstance().isIOS()) {
@@ -139,8 +141,7 @@ public abstract class ArticlePageObject extends MainPageObject{
         }
     }
 
-    public void addArticleToExistingList(String folder_name) throws InterruptedException {
-//        Thread.sleep(2000);
+    public void addArticleToExistingList(String folder_name) {
         if(Platform.getInstance().isWEB()){
             this.removeArticleFromSavedIfItAdded();
         }
@@ -221,8 +222,17 @@ public abstract class ArticlePageObject extends MainPageObject{
     }
 
     public void checkArticleDescription() {
+        screenshot(this.takeScreenshot("article_title"));
         this.assertElementPresent(
                 ARTICLE_DESCRIPTION_ID,
+                "Title element is not present on the page"
+        );
+    }
+
+    public void checkArticleTitle() {
+        screenshot(this.takeScreenshot("article_title"));
+        this.assertElementPresent(
+                ARTICLE_TITLE,
                 "Title element is not present on the page"
         );
     }

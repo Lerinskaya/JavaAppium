@@ -48,6 +48,7 @@ abstract public class MyListsPageObject extends MainPageObject{
     }
 
     public void swipeArticleToDelete(String article_title) {
+        screenshot(this.takeScreenshot("list"));
         this.waitForArticleToAppear(article_title);
         String article_xpath = getArticleXpathByTitle(article_title);
 
@@ -98,6 +99,7 @@ abstract public class MyListsPageObject extends MainPageObject{
     }
 
     public void waitForArticlePresent(String article_title) {
+        screenshot(this.takeScreenshot("article_page"));
 
         if(Platform.getInstance().isAndroid()) {
             this.assertElementPresent(

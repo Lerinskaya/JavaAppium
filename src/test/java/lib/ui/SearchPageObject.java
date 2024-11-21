@@ -1,7 +1,9 @@
 package lib.ui;
 
+import io.qameta.allure.Step;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -15,6 +17,7 @@ public abstract class SearchPageObject extends MainPageObject{
             SEARCH_INPUT,
             SEARCH_CANCEL_BUTTON,
             SEARCH_RESULT_BY_SUBSTRING_TPL,
+            SEARCH_RESULT_BY_SUBSTRING_TITLE_TPL,
             EMPTY_RESULT,
             LIST_ITEM_ID;
 
@@ -22,45 +25,55 @@ public abstract class SearchPageObject extends MainPageObject{
         super(driver);
     }
 
+    @Step("Choosing search result by substring")
     private static String getResultSearchElement(String substring){
         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     };
 
+    @Step("Clicking skip button on welcome page (does nothing for mobile web)")
     public void clickSkipButton() {
         this.waitForElementAndClick(SKIP_BUTTON_XPATH,"Cannot find skip button", 10);
     }
 
+    @Step("Initializing the search field")
     public void initSearchInput() {
         this.waitForElement(SEARCH_INIT_ELEMENT,"Cannot find search input", 10);
         this.waitForElementAndClick(SEARCH_INIT_ELEMENT,"Cannot find search input", 10);
     }
 
+    @Step("Typing '{search_line}' to the search field")
     public void typeSearchLine(String search_line) {
         this.waitForElementAndSendKeys(SEARCH_INPUT, search_line,"Cannot find and type into the search input", 10);
     }
 
+    @Step("Waiting for search result")
     public void waitForSearchResult(String substring) {
         String search_result_xpath = getResultSearchElement(substring);
         this.waitForElement(search_result_xpath,"Cannot find search result with " + substring, 10);
     }
 
+    @Step("Waiting for cancel button to appear")
     public void waitForCancelButtonToAppear() {
         this.waitForElement(SEARCH_CANCEL_BUTTON, "Cannot find search cancel button", 10);
     }
 
+    @Step("Waiting for cancel button to disappear")
     public void waitForCancelButtonToDisappear() {
         this.waitForElementAbsence(SEARCH_CANCEL_BUTTON, "Search cancel button is still present", 10);
     }
 
+    @Step("Clicking button to cancel search result")
     public void clickCancelButton() {
         this.waitForElementAndClick(SEARCH_CANCEL_BUTTON, "Cannot find search cancel button", 10);
     }
 
+    @Step("Selecting an article by substring in search results")
     public void clickArticleWithSubstring(String substring) {
         String search_result_xpath = getResultSearchElement(substring);
         this.waitForElementAndClick(search_result_xpath,"Cannot find and click search result with " + substring, 10);
     }
 
+    @Step("Getting amount of articles")
     public int getAmountOfArticles(String searchText) {
         String searchTextLocator = SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", searchText);
 
@@ -72,14 +85,29 @@ public abstract class SearchPageObject extends MainPageObject{
         return this.getAmountOfElements(searchTextLocator);
     }
 
+    @Step("Getting amount of articles")
+    public int getAmountOfArticlesByTitle(String searchText) {
+        String searchTextLocator = SEARCH_RESULT_BY_SUBSTRING_TITLE_TPL.replace("{SUBSTRING}", searchText);
+
+        this.waitForElement(
+                searchTextLocator,
+                "Cannot find search result",
+                10
+        );
+        return this.getAmountOfElements(searchTextLocator);
+    }
+
+    @Step("Waiting for empty results")
     public void waitForEmptyResultsLabel(){
         this.waitForElement(
                 EMPTY_RESULT,
                 "The result is not empty",
                 10
                 );
+        screenshot(this.takeScreenshot("empty_result"));
     }
 
+    @Step("Making sure there is no search results")
     public void noSearchResults(String searchText){
         String searchTextLocator = SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", searchText);
         this.assertElementNotPresent(
@@ -88,6 +116,7 @@ public abstract class SearchPageObject extends MainPageObject{
         );
     }
 
+    @Step("Clearing search input")
     public void clearSearchInput() {
         this.waitForElementAndClear(
                 SEARCH_INPUT,
@@ -95,6 +124,7 @@ public abstract class SearchPageObject extends MainPageObject{
                 30);
     }
 
+    @Step("Making sure input has text")
     public void checkInputText(String element_text) {
         this.assertElementHasText(
                 SEARCH_INIT_ELEMENT,
@@ -104,6 +134,7 @@ public abstract class SearchPageObject extends MainPageObject{
         );
     }
 
+    @Step("Checking article title")
     public void checkTitleText(String element_text) {
         this.assertElementHasText(
                 LIST_ITEM_ID,
@@ -113,6 +144,7 @@ public abstract class SearchPageObject extends MainPageObject{
         );
     }
 
+    @Step("Making sure search result is not empty")
     public void checkSearchResultsContainText(String input_text) {
         List<WebElement> searchResults = driver.findElements(By.id(LIST_ITEM_ID));
 
